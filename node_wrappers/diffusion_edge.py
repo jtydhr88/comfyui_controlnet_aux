@@ -1,12 +1,6 @@
-from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT, run_script
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 import sys
-
-def install_deps():
-    try:
-        import sklearn
-    except:
-        run_script([sys.executable, '-s', '-m', 'pip', 'install', 'scikit-learn'])
 
 class DiffusionEdge_Preprocessor:
     @classmethod
@@ -23,7 +17,6 @@ class DiffusionEdge_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, environment="indoor", patch_batch_size=4, resolution=512, **kwargs):
-        install_deps()
         from custom_controlnet_aux.diffusion_edge import DiffusionEdgeDetector
 
         model = DiffusionEdgeDetector \

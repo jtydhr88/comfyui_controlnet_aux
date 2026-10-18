@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT, MAX_RESOLUTION, run_script
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT, MAX_RESOLUTION
 import comfy.model_management as model_management
 import numpy as np
 import torch
@@ -8,18 +8,6 @@ import subprocess, threading
 import scipy.ndimage
 import cv2
 import torch.nn.functional as F
-
-def install_deps():
-    try:
-        import mediapipe
-    except ImportError:
-        run_script([sys.executable, '-s', '-m', 'pip', 'install', 'mediapipe'])
-        run_script([sys.executable, '-s', '-m', 'pip', 'install', '--upgrade', 'protobuf'])
-    
-    try:
-        import trimesh
-    except ImportError:
-        run_script([sys.executable, '-s', '-m', 'pip', 'install', 'trimesh', 'rtree'])
 
 #Sauce: https://github.com/comfyanonymous/ComfyUI/blob/8c6493578b3dda233e9b9a953feeaf1e6ca434ad/comfy_extras/nodes_mask.py#L309
 def expand_mask(mask, expand, tapered_corners):
@@ -60,7 +48,6 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, mask_bbox_padding=30, mask_type="based_on_depth", mask_expand=5, resolution=512, rand_seed=88, detect_thr=0.6, presence_thr=0.6, **kwargs):
-        install_deps()
         from custom_controlnet_aux.mesh_graphormer import MeshGraphormerDetector
         model = kwargs["model"] if "model" in kwargs \
             else MeshGraphormerDetector.from_pretrained(detect_thr=detect_thr, presence_thr=presence_thr).to(model_management.get_torch_device())
@@ -119,7 +106,6 @@ class Mesh_Graphormer_With_ImpactDetector_Depth_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, bbox_detector, bbox_threshold=0.5, bbox_dilation=10, bbox_crop_factor=3.0, drop_size=10, resolution=512, **mesh_graphormer_kwargs):
-        install_deps()
         from custom_controlnet_aux.mesh_graphormer import MeshGraphormerDetector
         mesh_graphormer_node = Mesh_Graphormer_Depth_Map_Preprocessor()
         model = MeshGraphormerDetector.from_pretrained(detect_thr=0.6, presence_thr=0.6).to(model_management.get_torch_device())
