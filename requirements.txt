@@ -1,17 +1,7 @@
-torch
 importlib_metadata; python_version < "3.8"
-huggingface_hub
-scipy
 opencv-python
-filelock
-numpy
-Pillow
-einops
-torchvision
-pyyaml
 scikit-image
 python-dateutil
-mediapipe>=0.8.0
 omegaconf
 addict
 yacs
